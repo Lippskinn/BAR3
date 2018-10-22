@@ -1,0 +1,21 @@
+For user management: 
+https://docs.djangoproject.com/en/2.0/topics/auth/default/#managing-users-in-the-admin
+https://docs.djangoproject.com/en/2.0/howto/custom-management-commands/
+
+
+
+
+For security issues:
+https://docs.djangoproject.com/en/2.0/topics/signing/
+https://docs.djangoproject.com/en/2.0/topics/security/
+
+
+For sending emails:
+https://docs.djangoproject.com/en/2.0/topics/email/
+
+Maybe for matching search location and found objects: 
+https://docs.djangoproject.com/en/2.0/topics/i18n/formatting/
+
+Maybe for informing user when interesting object is available:
+https://docs.djangoproject.com/en/2.0/topics/signals/
+

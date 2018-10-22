@@ -1,0 +1,98 @@
+﻿Some notes on the Django tutorial https://docs.djangoproject.com/en/2.0/intro/tutorial01/
+
+Preparation:
+Reactivate virtual environment: z.B.
+workon cith2
+
+SERVER 
+
+- $ python manage.py runserver
+You’ve started the Django development server, a lightweight Web server written purely in Python. We’ve included this with Django so you can develop things rapidly, without having to deal with configuring a production server – such as Apache – until you’re ready for production.
+https://docs.djangoproject.com/en/2.0/intro/tutorial01/ 
+Quit the server with CTRL + Leerzeichen(?)/ Control + C
+
+ -> localhost:8000
+
+MODELS
+
+Nützlich zur Dokumenation: Neben Machine-Readable Name der Fields in einem Model auch Human-Readable Names nutzen. 
+ZB pub_date = models.DateTimeField('date published') --> date published statt nur pub_date wird in Database angezeigt
+
+DATABASE
+
+Foreign Key: Für realtionshops many-to-one, many-to-many, one-to-one:
+zB class Choice(models.Model):
+        question = models.ForeignKey(Question, on_delete=models.CASCADE)
+   --> a relationship is defined, using ForeignKey. That tells Django each Choice is related to a single Question
+
+-----------------------------------------------------------------------------------
+MAKING MODEL CHANGES
+---------------
+Three Step Guide: 
+1. Change your models (in models.py)
+
+2. Run $ python manage.py makemigrations (und zB dazu: polls)
+to create migrations for those changes -> you’re telling Django that you’ve made some changes to your models (in this case, you’ve made new ones) and that you’d like the changes to be stored as a migration.Migrations are how Django stores changes to your models (and thus your database schema) - they’re just files on disk.
+
+3. Run $ python manage.py migrate
+to apply those changes to the database -> The migrate command takes all the migrations that haven’t been applied (Django tracks which ones are applied using a special table in your database called django_migrations) and runs them against your database - essentially, synchronizing the changes you made to your models with the schema in the database.
+----------------
+
+CHECK FOR PROBLEMS IN PROJECT
+$ python manage.py check
+checks for any problems in your project without making migrations or touching the database.
+
+-----------------------------------------------------------------------------------
+DATABASE API 
+
+https://docs.djangoproject.com/en/2.0/intro/tutorial02/
+1. $ python manage.py shell
+hop into the interactive Python shell
+
+2. >>> from polls.models import Question, Choice  (z.B)
+# Import the model classes we wrote.
+
+3.a Methods - examples: 
+- all(): Question.objects.all()
+- q = ... --> q.save()
+- q.id (give id)
+- >>> q.question_text (Access model field values via Python attributes.)
+- __str__() --> add String method in .py classes --> It’s important to add __str__() methods to your models, not only for your own convenience when dealing with the interactive prompt, but also because objects’ representations are used throughout Django’s automatically-generated admin. z.B. def __str__(self): return self.question_text
+- datetime/timezone --> nochmal nachlesen https://docs.djangoproject.com/en/2.0/intro/tutorial02/ & https://docs.djangoproject.com/en/2.0/topics/i18n/timezones/
+
+3.b Database lookup API: 
+- id: >>> Question.objects.filter(id=1)
+- startswith: Question.objects.filter(question_text__startswith='What')
+- time restricted search: >>> from django.utils import timezone -> >>> current_year = timezone.now().year -> >>> Question.objects.get(pub_date__year=current_year)
+- primary key (pk) exact lookups: Question.objects.get(pk=1)
+- how to create several choices for a question (Antwortoptionen) -->q = Question.objects.get(pk=1) --> q.choice_set.all() --> q.choice_set.create(choice_text='Not much', votes=0)
+- Choice objects have API access to their related Question objects. And Vice Versa: c.question And q.choice_set.all()
+- count(): q.choice_set.count() 
+- filter: Choice.objects.filter(question__pub_date__year=current_year)
+- delete: >>> c = q.choice_set.filter(choice_text__startswith='Just hacking') --> >>> c.delete()
+
+4. Close shell with exit()
+For more information on model relations, see Accessing related objects. For more on how to use double underscores to perform field lookups via the API, see Field lookups. For full details on the database API, see our Database API reference.
+
+-----------------------------------------------------------------------------------
+DJANGO ADMIN
+
+1. $ python manage.py createsuperuser
+Create admin user - Username: admin, Emailaddress: admin@example.com, password test o.ä.
+
+2. $ python manage.py runserver
+start development server
+
+(3. Make created app modifiable in the admin: In class polls/admin.py add: from django.contrib import admin; from .models import Question; admin.site.register(Question)
+
+-------------------------------------------------------------------------------------
+
+VIEWS
+In Django, web pages and other content are delivered by views. Each view is represented by a simple Python function (or method, in the case of class-based views). 
+To get from a URL to a view, Django uses what are known as ‘URLconfs’. A URLconf maps URL patterns to views.
+
+
+First, create a directory called templates in your polls directory. Django will look for templates in there.
+
+to be continued
+

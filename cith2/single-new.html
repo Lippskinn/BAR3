@@ -1,0 +1,255 @@
+ {% extends "base.html" %}
+{% load staticfiles%}
+
+     {% block title %}
+<title>{{ mode }}</title>
+ <script src='https://www.google.com/recaptcha/api.js'></script>
+    {% endblock title %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{% static "css/register.css" %}">
+
+
+<div id="newOfferCont" class="page-content d-flex align-items-stretch">
+
+        <!--***** SIDE NAVBAR *****-->
+
+
+        <div class="content-inner chart-cont">
+
+            <!--***** CONTENT *****-->
+            <div class="row">
+
+                <!--***** USER INFO *****-->
+                <div class="col-md-12">
+                    <div class="card form" id="form1">
+                        <div class="card-header">
+                            <h3><i class="fas fa-plus-circle"></i> {{ mode }}</h3>
+                        </div>
+                        <br>
+                        <form {% if res %} action="/angebot/{{res.id}}/bearbeiten/" {% else %} action="/angebot/neu/"  {% endif %} method="post" enctype="multipart/form-data">
+                             {% csrf_token %}
+                            <div class="row">
+                                {{ form.non_field_errors }}
+                                {% if failedCaptchaMsg %}
+                                <p id="failedCaptchaMsg"> {{ failedCaptchaMsg }} </p>
+                                 {% endif %}
+                                    <div class="form-group col-12">
+                                        {{ form.title.errors }}
+                                        <label for="name">Titel</label>
+                                        {{ form.title }}
+                                    </div>
+                                  <div class="form-group col-12">
+                                     {{ form.description.errors }}
+                                    <label for="exampleTextarea">Beschreibung</label>
+                                       {{ form.description }}
+                                      <small id="descHelp" class="form-text text-muted">Zustand, ggf. technische Angaben, Angaben zu Größe und Gewicht, Räume/Gärten: Angabe zu Ausstattung und Kapazitäten</small>
+
+                                  </div>
+                                <div class="form-group col-12">
+                                    {{ form.categoryId.errors }}
+                                    <label for="id_categoryId" class="col-12">Wählen Sie eine Kategorie aus:</label>
+                                    {{ form.categoryId }}
+                                </div>
+
+                                  <div class="form-group col-12" style="margin-top: 40px;">
+                                    <label for="exampleInputFile">Bilder hochladen</label>
+                                      {{ form.imagePath.errors }}
+                                      {{ form.imagePath }}
+                                    <small id="fileHelp" class="form-text text-muted">Wählen Sie ein Bild aus</small>
+                                  </div>
+
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <h4 style="border-bottom: 1px solid #ddd; padding-bottom: 7px; color:#555;">Standort</h4>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="plz">PLZ</label>
+                                        <input type="text" list="plzs" class="form-control" required="true" id="plzInput" aria-describedby="emailHelp" >
+                                         <datalist id="plzs">
+                                             {% for plz in plzs %}
+                                             <option value="{{ plz}}" label="{{ plz.number }} {{ plz.name }}"></option>
+                                             {% endfor %}
+                                         </datalist>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="street">Straße</label>
+                                        <input type="text" class="form-control" id="streetInput" required="true" aria-describedby="emailHelp" placeholder="z.B. Starkenfelderstraße 1">
+
+                                     <div class=" w-100 " id="contact-map" >
+                                        <div id="mapCont" class="col-12" style="height: 400px;"></div>
+                                     </div>
+
+                                    </div>
+                                    {{ form.locationLong.errors }}
+                                    {{ form.locationLat.errors }}
+                                    {{ form.locationLong }}
+                                    {{ form.locationLat }}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <h4 style="border-bottom: 1px solid #ddd; padding-bottom: 7px; color:#555;">Bedingungen</h4>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6 " style="margin-top: 10px;">
+                                     {{ form.type.errors }}
+                                     {{ form.type }}
+                                    <div id="costsCont">
+                                        <label for="id_costs">Kosten</label>
+                                        {{ form.costs }}
+                                    </div>
+                                        {{ form.costs.errors }}
+                                </div>
+
+                                <div id="timePicker" class="form-group col-12" style="margin-top: 40px;">
+                                    <label for="dateInput">Zeitraum der Verfügbarkeit</label>
+                                    <div class="form-check">
+                                          <input class="form-check-input checked" checked type="checkbox" value="" id="timeConstraintCheck">
+                                          <label class="form-check-label" for="timeConstraintCheck">
+                                                 Ist durchgehend verfügbar
+                                          </label>
+                                    </div>
+                                    <input type="text" disabled class="form-control col-6" id="dateInput" aria-describedby="timeHelp" placeholder="10.05.2018">
+                                    <!--<small id="fileHelp" class="form-text text-muted">Ist die Ressource nicht tagsüber verfügbar oder nur an bestimmten Wochentagen? Hier können Sie den Zeitraum verfeinern!</small>
+                                    <button type="" class="btn btn-general btn-blue col-12 col-md-4">Zeitraum verfeinern</button>-->
+                                    {{ form.startDate.errors }}
+                                    {{ form.endDate.errors }}
+                                    {{ form.startDate }}
+                                    {{ form.endDate }}
+                                 </div>
+
+                                <div class="form-group col-12" id="pfandCont">
+                                        {{ form.deposit.errors }}
+                                        <label for="name">Pfand/Kaution</label>
+                                          {{ form.deposit }}
+                                </div>
+
+                            </div>
+                            <div class="g-recaptcha" data-sitekey="6LfBBF0UAAAAAI6-VgeFIZH91PFkivDYku0OJKv_"></div>
+
+                            <button type="submit"  value="Submit" class="btn btn-general btn-white  mr-2" role="button">Senden</button>
+                            <button type="reset" class="btn btn-general btn-blue">Abbrechen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+ {% block footer_scripts %}
+   <script>
+
+         $(document).ready(function() {
+
+        var initLong = "{{mode}}" == "Angebot bearbeiten" ? $("#longInput").attr("value") : "10.870170";
+        var initLat = "{{mode}}" == "Angebot bearbeiten" ? $("#latInput").attr("value") : "49.89300";
+
+        var thirdPam = {{ints.startDate}} + "";
+        initNewOffer(initLat, initLong, thirdPam);
+
+
+            $('#id_costs').removeAttr('required');
+
+
+            var radios =  $('input[type="radio"][checked]');
+            if($(radios).attr('id') == 'id_type_1') {
+                     $('#costsCont').hide();
+                     $('#timePicker').show();
+                     $('#pfandCont').show();
+                     $('#id_costs').removeAttr('required');
+                 }else if($(radios).attr('id') == 'id_type_2') {
+                     $('#costsCont').show();
+                     $('#timePicker').show();
+                     $('#pfandCont').show();
+                     $('#id_costs').prop('required',true);
+                 }
+                 else {
+                    $('#costsCont').hide();
+                    $('#timePicker').hide();
+                    $('#pfandCont').hide();
+                    $('#id_startDate').removeAttr('value');
+                    $('#id_endDate').removeAttr('value');
+                    $('#id_costs').removeAttr('required');
+                 }
+
+            $('input[type="radio"]').click(function() {
+                 if($(this).attr('id') == 'id_type_1') {
+                     $('#costsCont').hide();
+                     $('#timePicker').show();
+                     $('#pfandCont').show();
+                     $('#id_costs').removeAttr('required');
+                 }else if($(this).attr('id') == 'id_type_2') {
+                     $('#costsCont').show();
+                     $('#timePicker').show();
+                     $('#pfandCont').show();
+                     $('#id_costs').prop('required',true);
+                 }
+                 else {
+                    $('#costsCont').hide();
+                    $('#timePicker').hide();
+                    $('#pfandCont').hide();
+                    $('#id_startDate').removeAttr('value');
+                    $('#id_endDate').removeAttr('value');
+                    $('#id_costs').removeAttr('required');
+                 }
+            });
+
+             $('#id_startDate').removeAttr('required').attr('type','hidden');
+             $('#id_endDate').removeAttr('required').attr('type','hidden');
+
+            if($('#timeConstraintCheck').hasClass("checked")){
+                    $('#dateInput').removeAttr('disabled');
+                     $('#id_startDate').prop('required',true);
+                     $('#id_endDate').prop('required',true);
+            }  else {
+                    $('#dateInput').prop('disabled',true);
+                    $('#id_startDate').removeAttr('required');
+                    $('#id_endDate').removeAttr('required');
+                    $('#id_startDate').removeAttr('value');
+                    $('#id_endDate').removeAttr('value');
+            }
+
+
+             $('#id_startDate').removeAttr('required').attr('type','hidden');
+             $('#id_endDate').removeAttr('required').attr('type','hidden');
+
+            $('#timeConstraintCheck').click(function(){
+                 if($(this).hasClass('checked')) {
+                     $(this).removeClass("checked");
+                     $('#dateInput').removeAttr('disabled');
+                     $('#id_startDate').prop('required',true);
+                     $('#id_endDate').prop('required',true);
+
+                 }
+                 else {
+                    $(this).addClass('checked');
+                    $('#dateInput').prop('disabled',true);
+                    $('#id_startDate').removeAttr('required');
+                    $('#id_endDate').removeAttr('required');
+                    $('#id_startDate').removeAttr('value');
+                    $('#id_endDate').removeAttr('value');
+                 }
+            });
+
+
+
+         });
+
+    </script>
+    {% endblock footer_scripts %}

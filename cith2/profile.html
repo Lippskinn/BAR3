@@ -1,0 +1,248 @@
+<!-- start Alina: Added variables to template: username, email, address: working
+Started on method to show all resources in logged in user's watchlist: finished by Valentyna
+added logout links
+-->
+
+{% extends "base.html" %}
+{% load staticfiles%}
+{% load template_filters %}
+
+
+     {% block title %}
+<title>Mein Profil</title>
+    {% endblock title %}
+
+{% block content %}
+
+ <link rel="stylesheet" href="{% static "css/profile.css" %}">
+<!--====================================================
+                        PAGE CONTENT
+======================================================-->
+    <div class="row page-content d-flex align-items-stretch">
+
+
+        <div id="dashboardContant" class="content-inner  chart-cont" style="width: 100%">
+
+            <!--***** CONTENT *****-->     
+            <div class="row mt-2" id="card-prof">
+                <div class="col-md-3">
+                    <div class="card hovercard">
+                        <div class="cardheader"></div>
+                        <div class="avatar">
+                            <img alt="" src='/{{account.imagePath|file_exists}}' class="img-fluid">
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                <a target="_blank" href="#">{{ user.username }}</a>
+                            </div>
+                            <div class="desc">Adresse: {{ user.account.address }}</div>
+                            <div class="desc">Email: {{ user.email  }}</div>
+                            <hr>
+                        </div>
+                        <nav class="nav text-center prof-nav">
+                            <ul  class="list-unstyled ">
+                                <li><a href="{% url 'editProfile' %}">Profil bearbeiten</a></li>
+                                <li><a href="/profil/loeschen/">Profil löschen</a></li>
+                                <li><a href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="card hovercard">
+                        <div class="tab" role="tabpanel"> 
+                            <ul class="nav nav-tabs" role="tablist">
+                              <li class="nav-item ">
+                                <a class="nav-link {% if active_section == 'merkliste' %} active{% endif %}" href="/profil/merkliste" ><span><i class="fa fa-user"></i></span> Merkliste</a>
+                              </li>
+                              <li class="nav-item ">
+                                <a class="nav-link {% if active_section == 'angebote' %} active{% endif %}" href="/profil/angebote" ><span><i class="fa fa-inbox"></i></span> Meine Angebote</a>
+                              </li>
+                            <!--start Alina -->
+                             <li class="nav-item ">
+                                 <a class="nav-link {% if active_section == 'suchanfragen' %} active{% endif %}" href="/profil/suchanfragen" ><span><i class="fa fa-question-circle"></i></span> Gespeicherte Suchanfragen </a>
+                              </li>
+                            <!-- end Alina -->
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content tabs">
+                              <div role="tabpanel" class="tab-pane fade {% if active_section == 'merkliste' %} show active{% endif %}" id="profile">
+
+                                    <div class="row">
+
+
+    <!-- If there are ressource.ids in the watchlist, show the ressource's title; else show paragraph text -->
+{% if my_watchlist %}
+
+    {% for resource in my_watchlist %}
+        <div class="col-sm-6 col-md-4 col-lg-3 fadeInUp merklisteCont">
+              <div class="card card-inverse card-info col-12">
+                   <a class="imageIndCont" href="/angebot/{{resource.resourceId.id}}/">
+
+                            <img class="img img-responsive full-width" src='/{{resource.resourceId.imagePath.url|file_exists}}' />
+
+                   </a>
+                       <div class="card-block">
+                           <a href="/angebot/{{resource.resourceId.id}}/"><h4 class="card-title">
+                            <a href="/angebot/{{ resource.resourceId.id }}/">{{ resource.resourceId.title }}</a>
+                            </h4>
+                           </a>
+                       </div>
+                        <div class="card-footer">
+                             <p col-12>{{ resource.resourceId.resourceId }}  </p>
+                              <a href="/angebot/{{resource.resourceId.id}}/unwatch/" title="Löschen" class="btn btn-danger float-right btn-sm constWidth"><i class="far fa-trash-alt"></i></a>
+                        </div>
+              </div>
+        </div>
+    {% endfor %}
+
+{% else %}
+    <p>Noch nichts in der Merkliste.</p>
+{% endif %}
+
+                                    </div>
+
+                                  <div id="merklisteContLoader" class="btn btn-primary col-12 loadmoreBtn">Mehr laden</div>
+
+
+                              </div>
+                              <div role="tabpanel" class="tab-pane fade {% if active_section == 'angebote' %} show active{% endif %}" id="buzz">
+                                    <div class="row" id="offersRow">
+
+                                        <div class="desc-comp-offer  fadeInUp col-12" >
+                                            {% if my_res %}
+                                                {% for resource in my_res %}
+                                            <div class="desc-comp-offer-cont row nohoverCont offerCont col-12">
+
+                                                <a class="thumbnail-blogs col-3 imageIndCont"  href="/angebot/{{resource.id}}/">
+                                                    <img class="img img-responsive full-width" src='/{{resource.imagePath.url|file_exists|file_exists}}' >
+                                                </a>
+
+                                                <div class="col-9">
+                                                  <h3>{{ resource.title }}</h3>
+                                                    <h1> {{ resource.IntervalConstraint_set }} </h1>
+
+                                                  <p class="desc">{{ resource.description }} </p>
+                                                    <row>
+                                                        {% if resource.type != "ZU VERSCHENKEN" %}
+                                                        <a class="col-12 col-md-4  btn  btn-primary" style="color: #fff" href="/profil/angebote/{{resource.id}}/verfuegbarkeit/" style="">Als verliehen markieren</a>
+                                                        {% endif %}
+                                                        <a class="col-5  col-md-3  btn  btn-warning" href="/angebot/{{resource.id}}/bearbeiten/" style="">Bearbeiten</a>
+                                                        <a class="col-5 col-md-3  btn  btn-danger" onclick="$('#deleteModal').modal('show');$('#deleteYes').attr('href', '/angebot/{{resource.id}}/deleteOffer/');" style="color: #fff">Löschen</a>
+                                                    </row>
+                                                </div>
+                                            </div>
+                                                {% endfor %}
+                                                {% else %}
+                                                  <p>Sie haben noch keine Resourcen angeboten.</p>
+                                                {% endif %}
+
+
+                                          </div>
+                                        </div>
+
+                                  <div id="offerContLoader" class="btn btn-primary col-12 loadmoreBtn">Mehr laden</div>
+
+                              </div>
+<!--start alina: Gespeicherte Suchanfragen Tab -->
+                            <div role="tabpanel" class="tab-pane fade {% if active_section == 'suchanfragen' %} show active{% endif %}" id="buzz2">
+                                    <div class="row" id="queriesRow">
+
+                                        <div class="desc-comp-offer  fadeInUp col-12" >
+                                            {% if my_queries %}
+                                                {% for query in my_queries %}
+                                            <div class="desc-comp-offer-cont row nohoverCont queryCont" >
+
+                                                <div class="col-9">
+                                                  <h3>{{ query.title }}</h3>
+
+                                                    <row>
+                                                        <a class="col-5 col-md-3  btn  btn-danger" onclick="$('#deleteModal').modal('show');$('#deleteYes').attr('href', '/suchanfrage/{{query.id}}/deleteQuery/');" style="color: #fff">Löschen</a>
+                                                        <!-- start Nina -->
+                                                        <a class="col-5  col-md-3  btn  btn-warning" href="/suchanfrage/{{query.id}}/bearbeiten/" style="">Bearbeiten</a>
+                                                        <!-- end Nina -->
+                                                    </row>
+                                                </div>
+                                            </div>
+                                                {% endfor %}
+                                                {% else %}
+                                                  <p>Sie haben noch keine Suchanfrage gespeichert.</p>
+                                                {% endif %}
+
+
+                                          </div>
+                                        </div>
+
+                                  <div id="queryContLoader" class="btn btn-primary col-12 loadmoreBtn">Mehr laden</div>
+
+                              </div>
+
+                            </div>
+                        <!-- Ende gespeicherte Suchanfragen Tab-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+        </div>
+    </div>
+	<div class="modal fade" id="deleteModal"  tabindex="-1" role="dialog" aria-labelledby="mainModal" aria-hidden="true">
+		<div class="modal-dialog" id="" style="width: 40% !important" role="document">
+			<div class="modal-content" style="padding: 40px" id="career-p3">
+			  <div class="container-fluide">
+				<div class="row" id="categModalRow" style="text-align: center; justify-content: space-between" >
+                   <p class="col-12">Wollen Sie wirklich dieses Angebot löschen?</p>
+ 				    <a class="btn btn-white btn-general col-5" id='deleteYes' href="/angebot/{{resource.id}}/deleteOffer/" style="cursor:pointer; color:#fff; margin:10px;" role="button" onclick="$('#deleteModal').modal('hide');" ><i fa fa-right-arrow></i>Ja</a>
+                    <button class="btn  btn-blue btn-general col-5" style="cursor:pointer; margin:10px;" role="button" onclick="$('#deleteModal').modal('hide');"><i fa fa-right-arrow></i>Nein</button>
+
+				</div>
+			  </div>
+            </div>
+		</div>
+	</div>
+    {% if res != None  %}
+	<div class="modal  show" id="availabilityModal" tabindex="-1"   role="dialog" aria-labelledby="mainModal" aria-hidden="true">
+		<div class="modal-dialog"  style="width: 80% !important" role="document">
+			<div class="modal-content" style="padding: 40px" >
+			  <div class="container-fluide">
+				<div class="row" id="availabilityModalRow" style="text-align: center; justify-content: space-between" >
+                    <h5 class="col-12">Wann soll die Ressource verliehen sein?</h5>
+                    <input id="dateInput" />
+                    <div id="staticCalendar" class="col-12" ></div>
+                    <h5 id="alreadyLent" class="col-12 invisible">Wieder freischalten:</h5>
+                    <div id="negativeIntervals" class="col-12"></div>
+
+                  <!--  <button class="btn btn-white btn-general col-5" style="cursor:pointer; margin:10px;" role="button" onclick="$('#availabilityModal').modal('hide');"><i fa fa-right-arrow></i>Fertig</button>
+                    <button class="btn  btn-blue btn-general col-5" style="cursor:pointer; margin:10px;" role="button" onclick="$('#availabilityModal').modal('hide');"><i fa fa-right-arrow></i>Abbrechen</button>
+                    -->
+				</div>
+			  </div>
+            </div>
+		</div>
+	</div>
+    {% endif %}
+
+{% endblock %}
+
+{% block footer_scripts %}
+    <script>
+
+    {% if res != None %}
+
+    $(window).on('load',function(){
+        $('#availabilityModal').modal('show');
+        initDashboard({{ intervals|safe }}, {{res.id}});
+    });
+    {% else %}
+    initDashboard(null);
+    {% endif %}
+
+    </script>
+
+
+{% endblock footer_scripts %}
+
+<!-- end Alina -->

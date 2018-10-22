@@ -1,0 +1,185 @@
+ {% extends "base.html" %}
+{% load staticfiles%}
+
+
+     {% block title %}
+<title>{{ mode }}</title>
+ <script src='https://www.google.com/recaptcha/api.js'></script>
+    {% endblock title %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{% static "css/register.css" %}">
+
+
+<div class="page-content d-flex align-items-stretch">
+
+        <!--***** SIDE NAVBAR *****-->
+
+
+        <div class="content-inner chart-cont">
+
+            <!--***** CONTENT *****-->
+            <div class="row">
+
+                <!--***** USER INFO *****-->
+                <div class="col-md-12">
+                    <div class="card form" id="form1">
+                        <div class="card-header">
+                            <h3><i class="fa fa-user-circle"></i> Benutzer Information</h3>
+                        </div>
+                        <br>
+                        {% if not organisation %}
+                            {% if mode == "Profil bearbeiten" %}
+                            <form action="{% url 'editProfile' %}" method="POST" >
+                            {% else %}
+                                <form action="{% url 'privat_registration' organisation=False %}" method="POST" >
+                            {% endif %}
+                        {% endif %}
+                        {% if organisation %}
+                                    {% if mode == "Profil bearbeiten" %}
+                                <form action="{% url 'editProfile' %}" method="POST" >
+                                 {% else %}
+                                <form action="{% url 'organisation_registration' organisation=True %}" method="POST" >
+                                 {% endif %}
+                         {% endif %}
+                            {% csrf_token %}
+                            <div class="row">
+                                {% if failedCaptchaMsg %}
+                                <div class="col-md-6">
+                                    <p id="failedCaptchaMsg"> {{ failedCaptchaMsg }} </p>
+                                </div>
+                                <div class="col-md-6">
+                                </div>
+                                {% endif %}
+                                 <div class="col-md-6">
+
+                                     <div class="form-group">
+                                         <label for="username">Username</label><i class="asterisk"> *</i>
+                                         {{ userform.username.errors }}
+                                         {{ userform.username }}
+                                     </div>
+
+                                 </div>
+                                 <div class="col-md-6">
+                                    {% if organisation %}
+                                    <div class="form-group">
+                                        <label for="name">Name der Organisation</label><i class="asterisk"> *</i>
+                                        {{ accountform.organisationName.errors }}
+                                        {{ accountform.organisationName }}
+                                    </div>
+                                    {% endif %}
+                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email">E-Mail Adresse</label><i class="asterisk"> *</i>
+                                        {{ userform.email.errors }}
+                                        {{ userform.email }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="form-group has-success">
+                                        <label for="website">Passwort</label><i class="asterisk"> *</i>
+                                        {{ userform.password.errors }}
+                                        {{ userform.password }}
+                                    </div>
+
+                                </div>
+                                {% if not organisation %}
+                                    <div class="col-md-6">
+                                       <div class="form-group ">
+                                          {{ userform.first_name.errors }}
+                                             <label for="name">Vorname</label><i class="asterisk"> *</i>
+                                         {{ userform.first_name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                         <div class="form-group ">
+                                          {{ accountform.last_name.errors }}
+                                         <label for="name">Nachname</label><i class="asterisk"> *</i>
+                                            {{ userform.last_name }}
+                                        </div>
+                                   </div>
+                                    {% endif %}
+                                <div style="margin-left: 20px"  class="form-group">
+                                        {{ accountform.imagePath.errors }}
+                                        <label for="name">Bild</label>
+                                        {{ accountform.imagePath }}
+                                </div>
+                                <div style="margin-left: 20px" class="col-12 form-check ">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" required class="form-check-input">
+                                        Ich habe die Datenschutzerklärung gelesen und akzeptiere diese
+                                          </label><i class="asterisk"> *</i>
+                                </div>
+
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <h4 style="border-bottom: 1px solid #ddd; padding-bottom: 7px; color:#555;">Adresse</h4>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ accountform.plz.errors }}
+                                        <label for="plz">PLZ</label>
+                                        {{ accountform.plz }}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {{ accountform.address.errors }}
+                                        <label for="street">Straße</label>
+                                        {{ accountform.address }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            {% if organisation %}
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <h4 style="border-bottom: 1px solid #ddd; padding-bottom: 7px; color:#555;">Ansprechpartner/-in</h4>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ userform.first_name.errors }}
+                                        <label for="name">Vorname</label><i class="asterisk"> *</i>
+                                        {{ userform.first_name }}
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ userform.last_name.errors }}
+                                        <label for="name">Nachname</label><i class="asterisk"> *</i>
+                                        {{ userform.last_name }}
+                                    </div>
+                                </div>
+
+                            </div>
+                            {% endif %}
+
+                            <div class="g-recaptcha" data-sitekey="6LfBBF0UAAAAAI6-VgeFIZH91PFkivDYku0OJKv_"></div>
+
+                            <button type="submit" class="btn btn-general btn-white  mr-2">Senden</button>
+                            <button type="reset" class="btn btn-general btn-blue">Abbrechen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+ {% block footer_scripts %}
+   <script>
+    </script>
+    {% endblock footer_scripts %}

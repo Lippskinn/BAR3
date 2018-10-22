@@ -1,0 +1,178 @@
+ {% extends "base.html" %}
+{% load staticfiles%}
+
+     {% block title %}
+<title>Suchanfrage speichern</title>
+ <script src='https://www.google.com/recaptcha/api.js'></script>
+    {% endblock title %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{% static "css/register.css" %}">
+
+
+<div id="newOfferCont" class="page-content d-flex align-items-stretch">
+
+        <!--***** SIDE NAVBAR *****-->
+
+        <div class="content-inner chart-cont">
+
+            <!--***** CONTENT *****-->
+            <div class="row">
+
+                <!--***** USER INFO *****-->
+                <div class="col-md-12">
+                    <div class="card form" id="form1">
+                        <div class="card-header">
+
+                            <h3> <i class="fas fa-search"></i> Suchanfrage speichern</h3>
+                        </div>
+                        <br>
+                        <form  {% if res %} action="/suchanfrage/{{res.id}}/bearbeiten/" {% else %} action="/suchanfrage/neu/speichern/" {% endif %} method="post" enctype="multipart/form-data">
+                             {% csrf_token %}
+                            <div class="row">
+                                {{ form.non_field_errors }}
+                                {% if failedCaptchaMsg %}
+                                <p id="failedCaptchaMsg"> {{ failedCaptchaMsg }} </p>
+                                 {% endif %}
+                                    <div class="form-group col-12">
+                                        {{ form.title.errors }}
+                                        <label for="name">Titel</label>
+                                        {{ form.title }}
+                                    </div>
+
+                                <div class="form-group col-12">
+                                    {{ form.categoryId.errors }}
+                                    <label for="id_categoryId" class="col-12">Wählen Sie eine Kategorie aus:</label>
+                                    {{ form.category }}
+                                </div>
+
+
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <h4 style="border-bottom: 1px solid #ddd; padding-bottom: 7px; color:#555;">Standort</h4>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="plz">PLZ</label>
+                                        <input type="text" list="plzs" class="form-control" id="plzInput" aria-describedby="emailHelp" required>
+                                         <datalist id="plzs">
+                                             {% for plz in plzs %}
+                                             <option value="{{ plz}}" label="{{ plz.number }} {{ plz.name }}"></option>
+                                             {% endfor %}
+                                         </datalist>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="street">Straße</label>
+                                        <input type="text" class="form-control" value="" id="streetInput" aria-describedby="emailHelp" placeholder="z.B. Starkenfelderstraße 1" required>
+
+
+                                    {{ form.ambit.errors }}
+                                          <label for="id_categoryId" class="col-12" style="padding:0;margin-top:15px;">Umkreis:</label>
+                                    {{ form.ambit }}
+                                     </div>
+                                    {{ form.longitude.errors }}
+                                    {{ form.latitude.errors }}
+                                    {{ form.longitude }}
+                                    {{ form.latitude }}
+
+                                </div>
+
+
+                            </div>
+
+
+
+                                <div class="form-group col-12" style="margin-top: 40px;">
+                                    <div class="row mt-3">
+                                           <div class="col-md-12">
+                                                <h4 style="border-bottom: 1px solid #ddd; padding-bottom: 7px; color:#555;">Zeitraum der Nutzung</h4>
+                                            </div>
+                                    </div>
+
+
+
+                                    <div class="form-check">
+                                          <input class="form-check-input checked" checked type="checkbox" value="" id="timeConstraintCheck">
+                                          <label class="form-check-label" for="timeConstraintCheck">
+                                                 Zeitraum nicht relevant
+                                          </label>
+                                    </div>
+                                    {{ form.startDate.errors }}
+                                    {{ form.endDate.errors }}
+                                    {{ form.startDate }}
+                                    {{ form.endDate }}
+                                    <input type="text" disabled class="form-control col-6" id="dateInput" aria-describedby="timeHelp" placeholder="10.05.2018">
+                                 </div>
+
+                           
+                            <div class="g-recaptcha" data-sitekey="6LfBBF0UAAAAAI6-VgeFIZH91PFkivDYku0OJKv_"></div>
+
+                            <button type="submit"  value="Submit" class="btn btn-general btn-white  mr-2" role="button">Senden</button>
+                            <button type="reset" class="btn btn-general btn-blue">Abbrechen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+ {% block footer_scripts %}
+   <script>
+     $(document).ready(function() {
+
+            $('#id_latitude').val("10.870170");
+            $('#id_longitude').val("49.89300");
+
+            initNewQuery();
+
+            var preFillTitle = "{{ preFill.keywords }}" ;
+            if(preFillTitle != ''){
+                $("#id_title").attr("value", preFillTitle);
+            }
+
+            $('#startDateInput').removeAttr('required').attr('type','hidden');
+            $('#endDateInput').removeAttr('required').attr('type','hidden');
+
+            if($('#timeConstraintCheck').hasClass("checked")){
+                     $('#dateInput').prop('disabled',true);
+                    $('#id_startDate').removeAttr('required');
+                    $('#id_endDate').removeAttr('required');
+                    $('#id_startDate').removeAttr('value');
+                    $('#id_endDate').removeAttr('value');
+            }  else {
+                    $('#dateInput').removeAttr('disabled');
+                     $('#id_startDate').prop('required',true);
+                     $('#id_endDate').prop('required',true);
+
+            }
+
+            $('#timeConstraintCheck').click(function(){
+                 if($(this).hasClass('checked')) {
+                     $(this).removeClass("checked");
+                     $('#dateInput').removeAttr('disabled');
+                     $('#startDateInput').prop('required', true);
+                     $('#endDateInput').prop('required', true);
+                 }
+                 else {
+                    $(this).addClass('checked');
+                    $('#dateInput').prop('disabled',true);
+                    $('#startDateInput').removeAttr('required');
+                    $('#endDateInput').removeAttr('required');
+                    $('#startDateInput').removeAttr('value');
+                    $('#endDateInput').removeAttr('value');
+                 }
+            });
+
+         });
+
+
+    </script>
+    {% endblock footer_scripts %}

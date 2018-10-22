@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+{% load staticfiles%}
+
+
+     {% block title %}
+<title>Bamberger Ressourcenpool</title>
+    {% endblock title %}
+
+{% block content %}
+
+	<link rel="stylesheet" href="{% static "css/careers.css" %}">
+
+    <section id="home">
+      <div id="mapCont" class=" carousel-fade" style="height: 110vh">
+        <!-- Carousel items -->
+
+          <a id="filterToggle"  title="Filter Einblenden/Ausblenden" class=""  href="#mainFilterCont" data-toggle="collapse"><i class="fa fa-filter"></i></a>
+
+
+      <div class="container" >
+        <div class="row">
+
+          <div class="col-md-6 col-xs-8" >
+
+
+            <div id="mainFilterCont" class="contact-h-cont wow fadeInDown collapse show"  style="margin: 20 !important;  ">
+
+
+              <h3 class="cl-white">Filter</h3><br>
+              <form id="mapFilterForm" class=" ">
+			    <div class="form-group cl-white row" id="catPicker">
+                    <label class="col-md-12 col-xl-6 catLabel">Kategorien:</label>
+                    <select id="catSelect" class="form-control">
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" class=""> {{ cat.title }}</option>
+                        {% endfor %}
+                    </select>
+				</div>
+                <div class="form-group cl-white">
+                  <label for="keySearch">Begriff</label>
+                  <input type="text" value="" class="form-control" id="keySearch" aria-describedby="nameHelp" placeholder="z.B. Gartenstuhl...">
+                </div>
+
+				<div class="row">
+                <div class="form-group cl-white col-sm-6" >
+                  <label for="InputPLZ">PLZ</label>
+                  <input type="text" class="form-control" list="plzs" id="inputPLZ" aria-describedby="InputPLZ" placeholder="">
+				    <datalist id="plzs">
+                          {% for plz in plzs %}
+                                <option value="{{ plz}}" label="{{ plz.number }} {{ plz.name }}"></option>
+                         {% endfor %}
+                    </datalist>
+                </div>
+				<div class="form-group col-sm-6" >
+						<label for="umkreisSelect" style="color:#FFF;">Umkreis</label>
+						<select id="umkreisSelect" class="form-control">
+							<option>5 km</option>
+							<option>10 km</option>
+							<option>20 km</option>
+							<option>30 km</option>
+						</select>
+				</div>
+				</div>
+
+                <div class="form-group cl-white">
+                  <label for="dateInput">Datum</label>
+                  <input type="text" class="form-control" id="dateInput" aria-describedby="subjectHelp" placeholder="10.05.2018">
+                </div>
+
+                <button class="btn btn-general btn-white" type="submit" id="filtSub" role="button"><i fa fa-right-arrow></i>LOS</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+            </div>
+
+      </div>
+
+
+    </section>
+
+	<!--====================================================
+                        OFFER
+======================================================-->
+    <section id="angebote">
+      <div id="foundResourcesParent" class="container-fluid"></div>
+
+        <a  class="btn btn-warning btn-block" style="margin-top: 15px;" href="/suchanfrage/neu/">Nichts gefunden? Suchanfrage Speichern </a>
+
+
+    </section>
+
+	<div id="about" class="home-p pages-head1 text-center">
+      <div class="container">
+        <h1 class="wow fadeInUp" data-wow-delay="0.1s">Häufig gestellte Fragen</h1>
+        <p>FAQ</p>
+      </div><!--/end container-->
+    </div>
+
+<!--====================================================
+                      FAQ-P1
+======================================================-->
+    <section id="faq" class="team-p1" >
+      <div class="container" >
+	  	  <h2>FAQ</h2>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="faq-p1-cont">
+              <div class="service-h-tab">
+                <!--<nav class="nav nav-tabs" id="myTab" role="tablist">
+                  <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-expanded="true">Ressoursenpool</a>
+              <!--    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile">Konto</a>
+                  -->
+                 <!-- <a class="nav-item nav-link" id="my-profile-tab" data-toggle="tab" href="#my-profile" role="tab" aria-controls="my-profile">Rechtliches</a>-->
+               <!-- </nav> -->
+
+                <div class="tab-content" id="nav-tabContent">
+                  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <div class="toggle">
+                      <div class="toggle-title ">
+                        <h3>
+                        <i></i>
+                        <span class="title-name">Ich möchte etwas leihen</span>
+                        </h3>
+                      </div>
+                      <div class="toggle-inner">
+                        <p>Mit dem Ressourcenpool haben Gemeinwohl-Organisationen ein Tool an der Hand, bei dem sie auf einen Klick sehen, wer z.B. für ein Event eine geeignete Location, Lautsprecheranlage oder einen Beamer anbietet.</p>
+                      </div>
+                    </div>
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name">Ich kann etwas anbieten</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Sie haben einen Seminarraum, Flipchart oder eine Buttonmaschine und möchten diese mit anderen Vereinen oder Initiativen teilen? Dann werden Sie zum Verleiher! Sie können auch Ressourcen zum Verschenken eintragen.</p>
+                      </div>
+                    </div>
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Welche Kategorien gibt es?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Unsere verschiedenen Kategorien sind: Räumlichkeiten, Werzeuge und Maschinen, Veranstaltungsequipement, Elektronik und Technik, Büroartikel, Transportmittel, Haushaltsgeräte und- gegenstände, Spiel und Sport und Freizeit, Bücher und Musik und Film, Wissen  und Dienstleistungen.</p>
+                      </div>
+                    </div>
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Wer steckt hinter dem Ressourcenpool Bamberg?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Der Ressourcenpool Bamberg ist ein Projekt der CariThek Bamberg, einer Vermittlungsstelle für freiwilliges Engagement. Unser Ziel ist es freiwilliges, bürgerschaftliches Engagement zu befördern. Dafür bringen wir Menschen und Organisationen entsprechend ihrer Interessen und Kompetenzen zusammen. Wir stoßen Projekte an, die auf gemeinnütziges Engagement von Menschen und Organisationen setzen und wir machen Öffentlichkeitsarbeit.</p>
+                      </div>
+                    </div>
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Was sind Ressourcen?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Jede Organisation hat Ressourcen. Diese können sowohl materieller als auch immaterieller Natur
+                            sein. Vorstellbar sind Dinge wie Biertischgarnituren, Audioanlagen, Moderationswände,
+                            Flipcharts, Pavillons, Beamer, Räume, Lastenräder, Geschirr, Beratung, Glücksräder,
+                            Wanderausstellungen, Kostüme, Büroausstattung, Dekoration, Gartengeräte, Bohrmaschinen,
+                            Zurrgurte, Stühle, Ausstellungsflächen, Abstellräume, Sackkarren, Mikros, Boxen… Diese Liste
+                            ließe sich endlos fortsetzen.
+                          </p>
+                      </div>
+                    </div>
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Wie funktioniert´s?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Zum Ausleihen vorhandener Ressourcen in Bamberg, suchen Sie auf der Startseite des
+                            Ressourcenpools nach der benötigten Sache. Um die gesuchte Ressource besser und schneller zu
+                            finden, können Sie die Ressourcen nach Kategorien filtern oder ihr Schlagwort im
+                            Freitextsuchfeld eingeben. Der Stadtteil, in dem sich die Ressource befindet, wird in der
+                            Detailansicht angezeigt. Dort finden Sie auch Informationen zu den Ausleihbedingungen.
+                            Sie möchten die Ressource anfragen? Die Kontaktdaten finden Sie ebenfalls in der Detailansicht.
+                            Schreiben Sie einfach eine Email oder rufen Sie die Organisation bzw. Person an.
+                            Verleiher werden! Um eigene Ressourcen in den Ressourcenpool hochzuladen, benötigen Sie
+                            Zugangsdaten. Diese erhalten Sie in Nullkommanichts über unsere Registrierung. Und schon kann
+                            es losgehen!
+                            Der Ressourcenpool wächst mit der Beteiligung aller Organisationen in unserem Bamberger
+                            Netzwerk: Jede Einrichtung oder Person, die eine Ressource einstellt, trägt zur Reichhaltigkeit
+                            des Gesamtangebotes bei, so dass möglichst viele davon profitieren!
+                          </p>
+                      </div>
+                    </div>
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Wer kann mitmachen?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Verleiher Die Plattform richtet sich an Organisationen, Vereine, Behörden, Stiftungen,
+                            Unternehmen, Gruppen und Privatpersonen, die ihre Ressourcen zugunsten gemeinnütziger
+                            Zwecke/der Allgemeinheit zur Verfügung stellen möchten.
+                            Der Verleih zu kommerziellen Zwecken ist ausgeschlossen.
+                            Entleiher Alle Menschen dieser Stadt können Ressourcen ausleihen.
+                            Ausgeschlossen sind jedoch NutzerInnen oder Organisationen, die
+                            • durch rassistische Diskriminierung oder aus Gründen des Geschlechts, der ethnischen
+                            Herkunft, der Religion oder Weltanschauung, einer Behinderung, des Alters oder sexuellen
+                            Identität herabwürdigend agieren.
+                            Die Details zur Nutzung können Sie in unseren Nutzungsbedingungen nachlesen.
+                          </p>
+                      </div>
+                    </div>
+
+
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Kann ich auch etwas verschenken?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Sie haben Bürostühle abzugeben oder möchten dem ausrangierten, aber noch funktionsfähigen
+                            Drucker ein neues Zuhause geben? Das ist über den Ressourcenpool Bamberg möglich. Wählen
+                            Sie beim Hochladen der Ressource dafür einfach den Status Zu Verschenken aus. So können
+                            NutzerInnen auf den ersten Blick sehen, ob eine Ressource zu verschenken ist.
+                          </p>
+                      </div>
+                    </div>
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Wie kommt die Ressource von A nach B?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Für Abholung und Rückgabe der Ressource sind, wenn nicht anders vereinbart, Sie selbst
+                            verantwortlich.
+
+                            Sofern Sie Unterstützung im Transport benötigen, können Sie sich an unsere Partner wenden:<br>
+                            • Das kontakt – Das Kulturprojekt verleiht in Zusammenarbeit mit dem JuZ Bamberg das
+                            Lastenrad LORE (Link) auf spendenbasis.<br>
+                            • Evtl.: ökobil e.V., SnappCar, Flinkster und drivy
+                          </p>
+                      </div>
+                    </div>
+
+
+
+
+
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name">Kaputt?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Die häufigste Frage zum Ressourcenpool ist: „Was passiert, wenn eine Sache kaputt geht?“
+                            Der Ressourcenpool funktioniert nur, wenn die NutzerInnen einen respektvollen Umgang mit
+                            den geliehenen Gegenständen pflegen. Darüber hinaus ist Vertrauen beim (Ver-)Leihen wichtig,
+                            wie bei jedem „Sharing“.
+                            Außerdem empfehlen wir einen schriftlichen Leihvertrag abzuschließen. Dieser regelt im
+                            Schadensfall die Haftungsverhältnisse. Eine Vorlage dazu finden Sie hier.
+                            Leihvertrag_Formular.pdf
+                            Sollte etwas kaputt gehen, dann erfolgt, wenn nicht anders vereinbart, ein Ausgleich durch den
+                            Entleiher, wie bei jedem Schaden, der angerichtet wird. Genauer heißt dies: Sollte eine im
+                            Auftrag des Vereins handelnde Person einen Schaden an einer ausgeliehene Sache verursachen,
+                            könnte in diesem Falle die Vereinshaftpflicht-Versicherung bzw. die
+                            Privathaftpflichtversicherung greifen. Achtung: Das passiert jedoch nicht in jedem Falle. Die
+                            Versicherungs-Bedingungen müssten um Leihe erweitert werden, denn im Normalfall sind
+                            Schäden durch Leihe nicht versichert. Viele Gesellschaften haben aber in den besonderen
+                            Bedingungen eine Erweiterung für diesen Fall. Das sollte geprüft werden! Unabhängig von der
+                            Nutzung des Ressourcenpools empfehlen wir jedem Verein und Privatperson den Abschluss einer
+                            Haftpflicht-Versicherung.
+                            Sollte der Entleih über eine Initiative oder Projektgruppe ohne Rechtsform erfolgen, könnte in
+                            Haftungsfragen die private Haftpflicht-Versicherung oder das Privatvermögen der Person
+                            herhalten. Aber auch hier gilt es, genau hinzuschauen, denn auch in privaten Haftpflicht-
+                            Versicherungen ist Leihe nicht unbedingt mitversichert und müsste um diesen Aspekt ergänzt
+                            werden.
+                            Komplizierter könnte es beim Verleih eines KFZ werden. Es wäre darauf zu achten, dass die KFZHaftpflicht-
+                            Versicherung einen erweiterten NutzerInnenkreis und somit die Nutzung
+                            unbegrenzter Fahrer zulässt. Achtung: davon sind meist FahrerInnen unter 23 Jahren
+                            ausgeschlossen. Diese könnten aber eingeschlossen werden, was zu Prämienanpassungen führt.
+                            Hier sollte geklärt werden, wer die Kosten übernimmt.
+                            Weiterhin sollte im Vorfeld geklärt werden, wie mit einer Hochstufung von
+                            VersicherungsnehmerInnen im Schadensfall umgegangen wird. Es könnte erwogen werden, ob
+                            die KFZ-Haftpflicht-Versicherung z.B. einen Rabattschutz beinhaltet, der zwar jährliche
+                            Mehrkosten verursacht, aber das Hochstufen im Schadensfall ausschließt. Bei
+                            Versicherungswechsel wird allerdings die SF-Klasse mit Schaden weitergegeben. Daher wäre
+                            hiervon abzuraten.
+                          </p>
+                      </div>
+                    </div>
+
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Warum gibt es den Ressourcenpool?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Mit der Plattform machen wir vorhandene Ressourcen in der NGO-Landschaft sichtbar,
+                              unterstützen somit Organisationen und Initiativen in der Projektumsetzung und tragen zu einer
+                              nachhaltigen Nutzung von Ressourcen bei.
+                          </p>
+                      </div>
+                    </div>
+
+                    <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Tolles Projekt! Wie kann ich es bekannter machen?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Wir freuen uns, dass Sie das Projekt überzeugt! Für den Ressourcenpool gibt es Flyer (hier zum
+                            Download) (und Aufkleber, die wir Ihnen gerne zur Verbreitung des Projekts zur Verfügung
+                            stellen.)<br>
+                            Weiterhin berichten wir via Facebook regelmäßig über den Ressourcenpool und freuen uns über
+                            Liken, Teilen und Weitersagen.
+                          </p>
+                      </div>
+                    </div>
+
+                     <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Account löschen?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Wenn Sie nicht mehr dabei sein wollen, wenden Sie sich bitte an die Mitarbeitenden der
+                            CariThek: carithek@caritas-bamberg.de
+                          </p>
+                      </div>
+                    </div>
+
+                </div>
+                </div>
+                 <!-- <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                  --> <div class="tab-pane fade" id="my-profile" role="tabpanel" aria-labelledby="my-profile-tab">
+
+
+
+                     <div class="toggle">
+                      <div class="toggle-title  ">
+                          <h3>
+                          <i></i>
+                          <span class="title-name"> Sollte ich beim Verleih eine Vereinbarung abschließen?</span>
+                          </h3>
+                      </div>
+                      <div class="toggle-inner">
+                          <p>Wir empfehlen beim Verleih von Ressourcen den Abschluss einer Vereinbarung. Dafür steht hier
+                              eine Vorlage zum Download bereit, die die wichtigsten Dinge regelt. Diese sollte bei Übergabe in
+                               zweifacher Ausführung unterzeichnet werden.
+                          </p>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% endblock   %}
+
+    {% block footer_scripts %}
+    <script>
+            $(document).ready(function(){
+              initIndex();
+            });
+
+                   if( jQuery(".toggle .toggle-title").hasClass('active') ){
+                jQuery(".toggle .toggle-title.active").closest('.toggle').find('.toggle-inner').show();
+            }
+            jQuery(".toggle .toggle-title").click(function(){
+                if( jQuery(this).hasClass('active') ){
+                    jQuery(this).removeClass("active").closest('.toggle').find('.toggle-inner').slideUp(200);
+                }
+                else{   jQuery(this).addClass("active").closest('.toggle').find('.toggle-inner').slideDown(200);
+                }
+            });
+
+    </script>
+
+{% endblock footer_scripts %}
+

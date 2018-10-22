@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load staticfiles%}
+{% load template_filters %}
+
+     {% block title %}
+<title> {{ obj.title }} </title>
+    {% endblock title %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{% static "css/single-product.css" %}">
+    <link rel="stylesheet" href="{% static "css/shop.css" %}">
+
+
+<!--====================================================
+                  SINGLE-PRODUCT-P1
+======================================================-->
+    <section id="single-product-p1">
+      <div class="container">
+            <div class="wrapper row">
+              <div class="preview col-md-6">
+
+                <div class="preview-pic tab-content">
+                  <div class="tab-pane active" id="pic-1"><img src="/{{ obj.imagePath.url|file_exists }}" /></div>
+                </div>
+
+              </div>
+              <div class="details col-md-6">
+                <h3 class="product-title">{{ obj.title }}</h3>
+
+                <p class="product-description">{{ obj.description }}</p>
+                <h4 class="price ">{{ obj.type }}</h4>
+                  <a href="{% if is_watched %}unwatch{% else %}watch{% endif %}">
+                      <i class="fas fa-heart merkliste-heart {% if is_watched %}watched{% endif %}"
+                     title="{% if is_watched %}aus der Merkliste entfernen{% else %}auf die Merkliste{% endif %}"></i>
+                  </a>
+                  {% if obj.costs %}
+                  <h3><span style="font-family: 'Hind', sans-serif; font-size: 15px;text-transform:none;">Kosten: </span>   {{obj.costs}}</h3>
+                  {% endif %}
+                  {% if obj.deposit %}
+                  <h3><span style="font-family: 'Hind', sans-serif; font-size: 15px;text-transform:none;">Pfand/Kaution: </span>   {{obj.deposit}}</h3>
+                  {% endif %}
+
+                  {% if obj.type != "ZU VERSCHENKEN" %}
+                  <h5 class="sizes " style="margin-top: 10px;">verfügbarkeit:</h5>
+                    <div class="form-group  cl-white col-md-12" style="padding:0">
+                        <p><span class="color green"></span> verfügbar</p>
+                        <p><span class="color red"></span> nicht verfügbar</p>
+                        <input type="text" class="form-control" id="dateInput" aria-describedby="subjectHelp" placeholder="10.05.2018">
+                        <div id="staticCalendar" ></div>
+                    </div>
+                  {% endif %}
+
+              </div>
+
+
+                <div class="service-h-tab col-12">
+
+                        <nav class="nav nav-tabs" id="myTab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#contact-map" role="tab"  aria-expanded="true" aria-controls="nav-home">Karte</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#contact-tab"  role="tab" aria-controls="nav-profile">Kontakt</a>
+                         </nav>
+                    <div class="row tab-content" id="nav-tabContent">
+                        <div id="contact-tab" class="tab-pane fade  w-100" role="tabpanel" aria-labelledby="nav-home-tab">
+
+                            <div class="offererContacts row" >
+
+
+                                <div class="col-10 col-md-4" style=" text-align: center;" >
+                                    <img {% if obj.userId.account.imagePath %} src="/{{ obj.userId.account.imagePath|file_exists }}"
+                                         {% else %}
+                                         src="/static/images/offers/noimage.jpg"
+                                         {% endif %}
+                                         class="img-rounded">
+                                    <div class="review-block-name"><a >{{ obj.userId }}</a></div>
+                                </div>
+                                <address class="col-10 col-md-6">
+                                    <p><i class="fa fa-envelope"> </i> {{ obj.userId.email }}</p>
+                                    {% if obj.userId.account.address %}
+                                    <p><i class="fa fa-home"> </i> {{ obj.userId.account.address }}</p>
+                                    {% endif %}
+                                </address>
+                            </div>
+
+                         </div>
+
+                        <div class="tab-pane fade w-100 show active" id="contact-map" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div id="mapCont" class="col-12" style="height: 400px;"></div>
+                        </div>
+
+                   </div>
+                </div>
+
+    </section>
+
+<!--====================================================
+                        SHOP-P1
+======================================================-->
+
+    <section id="shop-p1" class="shop-p1" style="padding-top:0px;">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="shop-p1-title col-12">
+              <h3>Andere Angebote des Verleihers:</h3>
+              <div class="heading-border-light"></div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="row" style="padding: 0px">
+
+                {% if other_offers %}
+                {% for res in other_offers %}
+                    <div class="col-md-4 col-sm-6 col-lg-3 desc-comp-offer wow fadeInUp" data-wow-delay="0.4s" >
+                  <div class="desc-comp-offer-cont col-12">
+                    <div class="thumbnail-blogs">
+                        <div class="caption">
+                          <i class="fa fa-chain"></i>
+                        </div>
+                        <div class="imageIndCont">
+                            <img class="img img-responsive full-width" src="/{{ res.imagePath.url|file_exists }}" />
+                         </div>
+                    </div>
+                    <h3>{{ res.title }}</h3>
+                    <p class="desc">{{res.description}} </p>
+                      <row>
+                          <a class="col-10 offset-1 col-md-8 offset-md-2 btn  btn-general btn-white " href="/angebot/{{res.id}}/" style="">Zum Angebot</a>
+                      </row>
+                  </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p>Keine weiteren Ressourcen vorhanden.</p>
+                {% endif %}
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+{% endblock %}
+
+{% block footer_scripts %}
+   <script>
+         initSingle([{fields: {
+				id: {{ obj.id }},
+				title: '{{ obj.title }}',
+				description: '{{ obj.title }}',
+				category: '{{ obj.categoryId }}',
+				type: '{{ obj.type }}',
+				owner: "John Doe",
+				locationLat: {{ obj.locationLat }},
+				locationLong: {{ obj.locationLong }},
+				imagePath: '{{ obj.imagePath.url }}',
+				intervals: {{ intervals|safe }}
+				}}]);
+    </script>
+    {% endblock footer_scripts %}
